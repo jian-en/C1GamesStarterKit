@@ -70,6 +70,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # self.build_c1_logo(game_state)
         self.build_forefront(game_state)
         self.fortify_ends(game_state)
+        self.build_second_forefront(game_state)
         """
         Then build additional defenses.
         """
@@ -106,6 +107,15 @@ class AlgoStrategy(gamelib.AlgoCore):
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
         pass
+
+    def build_second_forefront(self, game_state):
+        # spawn more destructors
+        destructors_locations = [[4,11],[8,11],[12,11],[16,11],[19,11],[23,11]]
+        for location in destructors_locations:
+            if game_state.can_spawn(DESTRUCTOR, location):
+                game_state.attempt_spawn(DESTRUCTOR, location)
+
+    def forefront_
     # Here we make the C1 Logo!
     def build_c1_logo(self, game_state):
         """
