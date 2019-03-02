@@ -69,6 +69,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         # self.build_c1_logo(game_state)
         self.build_forefront(game_state)
+        self.fortify_ends(game_state)
         """
         Then build additional defenses.
         """
@@ -80,17 +81,30 @@ class AlgoStrategy(gamelib.AlgoCore):
         self.deploy_attackers(game_state)
 
     def build_forefront(self, game_state):
+
         # spawn filters
-        firewall_locations = [[3,12],[7,12],[11,12],[15,12],[18,12],[22,12]]
+        firewall_locations = [[3, 12], [7, 12], [11, 12], [15, 12], [18, 12], [22, 12]]
         for location in firewall_locations:
             if game_state.can_spawn(FILTER, location):
                 game_state.attempt_spawn(FILTER, location)
         # spawn destructors
-        firewall_locations = [[3,11],[7,11],[11,11],[15,11],[18,11],[22,11]]
+        firewall_locations = [[3, 11], [7, 11], [11, 11], [15, 11], [18, 11], [22, 11]]
         for location in firewall_locations:
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
-
+        pass
+        pass
+    def fortify_ends(self, game_state):
+        # spawn filters
+        firewall_locations = [[1, 12], [26, 12]]
+        for location in firewall_locations:
+            if game_state.can_spawn(FILTER, location):
+                game_state.attempt_spawn(FILTER, location)
+        # spawn destructors
+        firewall_locations = [[2, 11], [25, 11]]
+        for location in firewall_locations:
+            if game_state.can_spawn(DESTRUCTOR, location):
+                game_state.attempt_spawn(DESTRUCTOR, location)
         pass
     # Here we make the C1 Logo!
     def build_c1_logo(self, game_state):
