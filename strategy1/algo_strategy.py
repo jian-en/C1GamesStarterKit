@@ -115,7 +115,7 @@ class AlgoStrategy(gamelib.AlgoCore):
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
 
-    def forefront_
+    
     # Here we make the C1 Logo!
     def build_c1_logo(self, game_state):
         """
