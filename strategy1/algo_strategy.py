@@ -70,7 +70,11 @@ class AlgoStrategy(gamelib.AlgoCore):
         # self.build_c1_logo(game_state)
         self.build_forefront(game_state)
         self.fortify_ends(game_state)
+        self.forefront_encryptors(game_state)
+        self.corner_defense_strategy(game_state)
         self.build_second_forefront(game_state)
+
+        # self.build_filters(game_state)
         """
         Then build additional defenses.
         """
@@ -89,8 +93,8 @@ class AlgoStrategy(gamelib.AlgoCore):
             if game_state.can_spawn(FILTER, location):
                 game_state.attempt_spawn(FILTER, location)
         # spawn destructors
-        firewall_locations = [[3, 11], [7, 11], [11, 11], [15, 11], [18, 11], [22, 11]]
-        for location in firewall_locations:
+        destructor_locations = [[3, 11], [7, 11], [11, 11], [15, 11], [18, 11], [22, 11]]
+        for location in destructor_locations:
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
         pass
@@ -102,8 +106,8 @@ class AlgoStrategy(gamelib.AlgoCore):
             if game_state.can_spawn(FILTER, location):
                 game_state.attempt_spawn(FILTER, location)
         # spawn destructors
-        firewall_locations = [[2, 11], [25, 11]]
-        for location in firewall_locations:
+        destructor_locations = [[2, 11], [25, 11]]
+        for location in destructor_locations:
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
         pass
@@ -115,7 +119,20 @@ class AlgoStrategy(gamelib.AlgoCore):
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
 
-    
+    def forefront_encryptors(self, game_state):
+        encryptors_locations = [[11, 10], [15, 10], [12, 10], [16, 10]]
+        for location in encryptors_locations:
+            if game_state.can_spawn(DESTRUCTOR, location):
+                game_state.attempt_spawn(ENCRYPTOR, location)
+        second_encryptors_locations = [[12,10],[16,10]]
+        for location in second_encryptors_locations:
+            check_location = [location[0], location[1]-1]
+            if game_state.contains_stationary_unit(check_location):
+                game_state.attempt_spawn(ENCRYPTOR, location)
+        pass
+    def corner_defense_strategy(self, game_state):
+        
+        pass
     # Here we make the C1 Logo!
     def build_c1_logo(self, game_state):
         """
