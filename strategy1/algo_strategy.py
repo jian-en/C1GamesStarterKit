@@ -69,10 +69,15 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         # self.build_c1_logo(game_state)
         self.build_forefront(game_state)
-        self.fortify_ends(game_state)
+        self.build_defense_cores(game_state)
+        # self.fortify_ends(game_state)
+
+        # self.deploy_attackers_on_right(game_state)
+        self.deploy_attackers(game_state)
+        # self.corner_defense_strategy(game_state)
         self.forefront_encryptors(game_state)
-        self.corner_defense_strategy(game_state)
         self.build_second_forefront(game_state)
+
 
         # self.build_filters(game_state)
         """
@@ -83,30 +88,32 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         Finally deploy our information units to attack.
         """
-        self.deploy_attackers(game_state)
+        # self.deploy_attackers(game_state)
 
     def build_forefront(self, game_state):
 
         # spawn filters
-        firewall_locations = [[3, 12], [7, 12], [11, 12], [15, 12], [18, 12], [22, 12]]
+        # firewall_locations = [[1,13],[26,13],[12, 12],[8, 12], [20, 12], [16, 12],[23, 12],[3, 12]]
+        firewall_locations = [[0,13],[1,12],[26,12],[27,13],[5,12],[10,12],[15,12]]
         for location in firewall_locations:
             if game_state.can_spawn(FILTER, location):
                 game_state.attempt_spawn(FILTER, location)
         # spawn destructors
-        destructor_locations = [[3, 11], [7, 11], [11, 11], [15, 11], [18, 11], [22, 11]]
+        destructor_locations = [[3,11],[7,11], [12,11],[17,11], [21,11],[25,11],[1, 13], [26,13]]
+        # destructor_locations = [[0, 13], [27,13], [7, 11], [13, 11], [20, 11], [26,12], [15, 11], [23, 11], [1, 12],[3, 11]]
         for location in destructor_locations:
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
-        pass
+
         pass
     def fortify_ends(self, game_state):
         # spawn filters
-        firewall_locations = [[1, 12], [26, 12]]
+        firewall_locations = [[2, 13], [1, 13], [26,13], [25,12]]
         for location in firewall_locations:
             if game_state.can_spawn(FILTER, location):
                 game_state.attempt_spawn(FILTER, location)
         # spawn destructors
-        destructor_locations = [[2, 11], [25, 11]]
+        destructor_locations = [[0, 13], [1, 12], [27,13],[26,12]]
         for location in destructor_locations:
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
@@ -114,21 +121,32 @@ class AlgoStrategy(gamelib.AlgoCore):
 
     def build_second_forefront(self, game_state):
         # spawn more destructors
-        destructors_locations = [[4,11],[8,11],[12,11],[16,11],[19,11],[23,11]]
+        # destructors_locations = [[4,11],[8,11],[12,11],[16,11],[19,11],[23,11]]
+        destructors_locations = [[10,11],[15,11],[19,11],[23,11]]
         for location in destructors_locations:
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(DESTRUCTOR, location)
 
     def forefront_encryptors(self, game_state):
-        encryptors_locations = [[11, 10], [15, 10], [12, 10], [16, 10]]
+        encryptors_locations = [[3,10],[7,10], [8,10]]
         for location in encryptors_locations:
             if game_state.can_spawn(DESTRUCTOR, location):
                 game_state.attempt_spawn(ENCRYPTOR, location)
-        second_encryptors_locations = [[12,10],[16,10]]
-        for location in second_encryptors_locations:
-            check_location = [location[0], location[1]-1]
-            if game_state.contains_stationary_unit(check_location):
-                game_state.attempt_spawn(ENCRYPTOR, location)
+        pass
+    def build_defense_cores(self, game_state):
+        cores = game_state.CORES
+        # locations = [[11,9],[12,9],[15,9],[16,9]]
+        notin = [4,5]
+        make = [19,23,1,2,3,25,26,27]
+        for i in make:
+            if game_state.can_spawn(FILTER, [i,12]):
+                game_state.attempt_spawn(FILTER, [i,12])
+        for i in range(4, 26):
+            if i not in notin and game_state.can_spawn(FILTER, [i,12]):
+                game_state.attempt_spawn(FILTER, [i,12])
+        # for location in locations:
+        #     if i != 12 and game_state.can_spawn(FILTER, location):
+        #         game_state.attempt_spawn(ENCRYPTOR, location)
         pass
     def corner_defense_strategy(self, game_state):
         
@@ -267,12 +285,35 @@ class AlgoStrategy(gamelib.AlgoCore):
             deploy_index = random.randint(0, len(deploy_locations) - 1)
             deploy_location = deploy_locations[deploy_index]
             
-            game_state.attempt_spawn(SCRAMBLER, deploy_location)
+            game_state.attempt_spawn(EMP, deploy_location)
             """
             We don't have to remove the location since multiple information 
             units can occupy the same space.
             """
-        
+
+    def deploy_attackers_on_right(self, game_state):
+        # locations = [[17, 3], [18, 4], [19, 5]]
+        locations = [[14, 0]]
+        bits = game_state.BITS
+        for location in locations:
+            if bits >= 6:
+                if game_state.can_spawn(EMP, location):
+                    game_state.attempt_spawn(EMP, location, 2)
+                    bits = bits - 6
+            if game_state.get_resource(game_state.BITS) >= 5:
+                if game_state.can_spawn(PING, location):
+                    game_state.attempt_spawn(PING, location, 2)
+        # else:
+        #     bits = game_state.BITS
+        #     locations = [[21, 7], [20, 6], [19, 5]]
+        #     average_num = int(bits // len(locations))
+        #     if bits < len(locations):
+        #         if game_state.can_spawn(PING, locations[0]):
+        #             game_state.attempt_spawn(PING, locations[0], bits)
+        #     else:
+        #         for location in locations:
+        #             if game_state.can_spawn(PING, location):
+        #                 game_state.attempt_spawn(PING, location, average_num)
     def filter_blocked_locations(self, locations, game_state):
         filtered = []
         for location in locations:
